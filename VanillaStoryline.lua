@@ -30,7 +30,7 @@ storyline.Options.GradientLength = 30
 storyline.Options.Offset = 0 -- text offset for max. scroll frame
 storyline.Options.Delay = 0.03 -- 30 fps update
 storyline.Options.FrameStrata = {[1]="BACKGROUND",[2]="LOW",[3]="MEDIUM",[4]="HIGH",[5]="DIALOG",[6]="FULLSCREEN",[7]="FULLSCREEN_DIALOG",[8]="TOOLTIP"}
-storyline.Options.Version = "1.0.1" -- version
+storyline.Options.Version = "1.0.2" -- version
 
 -- onupdate text
 storyline.Variables.fadingProgress = 0
@@ -210,6 +210,7 @@ function storyline.Background:ConfigureFrame()
 	self.layer2.Background:SetFrameStrata("BACKGROUND")
 	self.layer2.Background:SetWidth(700)
 	self.layer2.Background:SetHeight(450)
+	self.layer2.Background:EnableMouse(1) -- Prevents clicks from pass through window
 	self.layer2.Background:SetPoint("TOPLEFT", 20,-20)
 	self.layer2.Background:SetPoint("BOTTOMRIGHT", -20,20)
 	local backdrop = {bgFile = "Interface\\AddOns\\VanillaStoryline\\Assets\\Images\\question-background"} 
@@ -1741,14 +1742,16 @@ function storyline.OptionsFrame:ConfigureFrame()
 		 self.FontSizeFont:SetTextColor(1,1,1)
 		 
 		-- move Frame
+		-- Disables clicks on the 2nd layer, as this is used to prevent clicking through
+		-- Leaving it enabled will only allow the window to be moved by the borders
 		self.MoveButton = CreateFrame("CheckButton", nil, self, "UICheckButtonTemplate")
 			 self.MoveButton:SetWidth(24)
 			 self.MoveButton:SetHeight(24)
 			 self.MoveButton:SetPoint("TOPLEFT",650,-5)
 			 self.MoveButton:SetScript("OnClick", function ()
 				 									PlaySound("igMainMenuOptionCheckBoxOn")
-													if self.MoveButton:GetChecked() then storyline.Background:EnableMouse(1)
-													else storyline.Background:EnableMouse(0) end
+													if self.MoveButton:GetChecked() then storyline.Background:EnableMouse(1); storyline.Background.layer2.Background:EnableMouse(0) 
+													else storyline.Background:EnableMouse(0) ; storyline.Background.layer2.Background:EnableMouse(1) end
 													end)
 
 		 self.MoveFont = self.MoveButton:CreateFontString(nil, "OVERLAY")
@@ -1759,6 +1762,7 @@ function storyline.OptionsFrame:ConfigureFrame()
 			 self.MoveFont:SetJustifyV("CENTER")
 			 self.MoveFont:SetText("Moveable:")
 			 self.MoveFont:SetTextColor(1,1,1)
+			 
 		
 		-- hide blizzard frames
 		self.HideButton = CreateFrame("CheckButton", nil, self, "UICheckButtonTemplate")
@@ -1780,10 +1784,38 @@ function storyline.OptionsFrame:ConfigureFrame()
 				self.HideFont:SetJustifyV("CENTER")
 				self.HideFont:SetText("Hide Blizzard Frames:")
 				self.HideFont:SetTextColor(1,1,1)
-
 			
 			if storyline.Options.HideBlizzardFrames == 1 then self.HideButton:SetChecked(1)
 			else self.HideButton:SetChecked(0) end
+			
+			--pfUI gossip/quest skin disable. Option hidden if pfUI is not installed
+			if pfUI then 	
+				self.PFHideButton = CreateFrame("CheckButton", nil, self, "UICheckButtonTemplate")
+					self.PFHideButton:SetWidth(24)
+					self.PFHideButton:SetHeight(24)
+					self.PFHideButton:SetPoint("TOPLEFT",650,-50)
+					self.PFHideButton:SetScript("OnClick", function ()
+														 PlaySound("igMainMenuOptionCheckBoxOn")
+														 if pfUI_config["disabled"]["skin_Gossip and Quest"] == "0" then pfUI_config["disabled"]["skin_Gossip and Quest"] = "1"
+														 else pfUI_config["disabled"]["skin_Gossip and Quest"] = "0"; DeclineQuest(); PlaySound("igQuestCancel"); end
+															pfUI.api.CreateQuestionDialog("Some settings need to reload the UI to take effect.\nDo you want to reload now?", function()
+																pfUI.gui.settingChanged = nil
+																ReloadUI()
+															end)
+														 end)
+
+				self.PFHideFont = self.PFHideButton:CreateFontString(nil, "OVERLAY")
+					self.PFHideFont:SetPoint("LEFT", -210, 0)
+					self.PFHideFont:SetFont("Fonts\\FRIZQT__.TTF", 12)
+					self.PFHideFont:SetWidth(200)
+					self.PFHideFont:SetJustifyH("RIGHT")
+					self.PFHideFont:SetJustifyV("CENTER")
+					self.PFHideFont:SetText("Disable PFui Gossip Skin:")
+					self.PFHideFont:SetTextColor(1,1,1)			
+					
+				if pfUI_config["disabled"]["skin_Gossip and Quest"] == "1" then self.PFHideButton:SetChecked(1)
+				else self.PFHideButton:SetChecked(0) end
+			end
 			
 		-- Frame Level
 		
@@ -1896,7 +1928,7 @@ function storyline.OptionsFrame:ConfigureFrame()
 		 self.VersionFont:SetWidth(800)
 		 self.VersionFont:SetJustifyH("CENTER")
 		 self.VersionFont:SetJustifyV("BOTTOM")
-		 self.VersionFont:SetText("Version: "..storyline.Options.Version.." by Renew @ Nostalrius.org")
+		 self.VersionFont:SetText("Version: "..storyline.Options.Version.." by Renew @ Nostalrius.org updated by tubtubs")
 		 self.VersionFont:SetTextColor(1,1,1,0.5)
 
 		 -- hide
@@ -1970,7 +2002,7 @@ function storyline.Text:ConfigureFrame()
 	-- Questtext Font
 	self.Questtext = {}
 	self.Questtext.Font = storyline.Background.layer5.Questtext.Scrollframe.Content:CreateFontString(nil, "OVERLAY")
-		self.Questtext.Font:SetPoint("TOPLEFT", 15, -10)
+		self.Questtext.Font:SetPoint("TOPLEFT", 15, 0)
 		self.Questtext.Font:SetFont("Fonts\\FRIZQT__.TTF", StorylineOptions.FontSize)
 		self.Questtext.Font:SetWidth(600)
 		self.Questtext.Font:SetHeight(0)
