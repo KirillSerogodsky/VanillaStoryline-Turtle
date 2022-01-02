@@ -1789,7 +1789,7 @@ function storyline.OptionsFrame:ConfigureFrame()
 			else self.HideButton:SetChecked(0) end
 			
 			--pfUI gossip/quest skin disable. Option hidden if pfUI is not installed
-			if pfUI then 	
+			if pfUI and pfUI.uf then 	
 				self.PFHideButton = CreateFrame("CheckButton", nil, self, "UICheckButtonTemplate")
 					self.PFHideButton:SetWidth(24)
 					self.PFHideButton:SetHeight(24)
