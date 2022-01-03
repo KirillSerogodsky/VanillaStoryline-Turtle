@@ -481,7 +481,7 @@ function storyline.Background:ConfigureFrame()
 
 	self.layer5.Questtext.Fade.Button = CreateFrame("Button",nil,self.layer5.Questtext.Fade)
 		self.layer5.Questtext.Fade.Button:SetWidth(650)
-		self.layer5.Questtext.Fade.Button:SetHeight(100)
+		self.layer5.Questtext.Fade.Button:SetHeight(120)
 		self.layer5.Questtext.Fade.Button:SetPoint("CENTER",0,0)
 		self.layer5.Questtext.Fade.Button:SetScript("OnEnter",function()
 															self.layer5.Questtext:SetBackdropBorderColor(0,1,0,1)
@@ -2013,15 +2013,15 @@ function storyline.Text:ConfigureFrame()
 
 	-- Continue Font
 	self.Questtext.Continue = storyline.Background.layer5.Questtext:CreateFontString(nil, "OVERLAY")
-		self.Questtext.Continue:SetPoint("BOTTOM", 0, 0)
+		self.Questtext.Continue:SetPoint("BOTTOM", 0, -15) --Shifted Down, below the frame
 		self.Questtext.Continue:SetFont("Fonts\\FRIZQT__.TTF", 10)
 		self.Questtext.Continue:SetWidth(100)
 		self.Questtext.Continue:SetHeight(20)
 		self.Questtext.Continue:SetJustifyH("LEFT")
 		self.Questtext.Continue:SetJustifyV("TOP")
-		self.Questtext.Continue:SetText("continue")
+		self.Questtext.Continue:SetText("Continue")
 		self.Questtext.Continue:SetTextColor(1,1,0.4)
-
+		
 	-- Complete Font
 	self.Questtext.Complete = storyline.Background.layer5.Questtext:CreateFontString(nil, "OVERLAY")
 		self.Questtext.Complete:SetPoint("BOTTOM", 0, 0)
@@ -2044,8 +2044,12 @@ function storyline:AcceptQuest()
 	-- open clicking
 	storyline.Background.layer5.Questtext.Fade.Button:SetScript("OnEnter",function()
                                                                             storyline.Background.layer5.Questtext:SetBackdropBorderColor(0,1,0,1)
+																			storyline.Text.Questtext.Continue:SetTextColor(0,1,0)
+
                                                                             end)
-	storyline.Background.layer5.Questtext.Fade.Button:SetScript("OnLeave",function() storyline.Background.layer5.Questtext:SetBackdropBorderColor(1,1,1,1) end)
+	storyline.Background.layer5.Questtext.Fade.Button:SetScript("OnLeave",function() storyline.Background.layer5.Questtext:SetBackdropBorderColor(1,1,1,1) 
+	storyline.Text.Questtext.Continue:SetTextColor(1,1,0.4)
+			end)
 	storyline.Background.layer5.Questtext.Fade.Button:SetScript("OnClick",function() storyline:AcceptQuestOnClick() end)
 	storyline.Text.Questtext.Continue:Show()
 	storyline.Text.Questtext.Complete:Hide()
