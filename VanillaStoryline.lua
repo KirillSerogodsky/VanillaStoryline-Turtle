@@ -2426,6 +2426,12 @@ function storyline:UpdateModels()
 	
 	-- individual model position fix
 	if model == "Interface\\Buttons\\talktomequestionmark" then storyline.NPC.PlayerFrame:SetPosition(0,0.9,0);storyline.NPC.PlayerFrame:SetModelScale(2) -- ok with scalebug
+			-- Onu from Darkshore used to test
+	elseif model == "Creature\\AncientOfLore\\AncientofLore" then storyline.NPC.PlayerFrame:SetPosition(0,2.0,3.9);storyline.NPC.PlayerFrame:SetModelScale(0.35) -- ok with scalebug
+		--Screecher spirits
+	elseif model == "Creature\\WindSerpent\\WindSerpent" then storyline.NPC.PlayerFrame:SetPosition(0,0.5,1.0) 
+		--Spirit healer
+	elseif model == "Creature\\spirithealer\\SpiritHealer" then storyline.NPC.PlayerFrame:SetPosition(0,0.3,1.8)
 	elseif model == "Character\\Gnome\\Male\\GnomeMale" then storyline.NPC.PlayerFrame:SetPosition(0,0.4,0);storyline.NPC.PlayerFrame:SetModelScale(0.6) -- ok
 	elseif model == "Character\\Gnome\\Female\\GnomeFemale" then storyline.NPC.PlayerFrame:SetPosition(0,0.3,0);storyline.NPC.PlayerFrame:SetModelScale(0.6) -- ok
 	elseif model == "Character\\Dwarf\\Male\\DwarfMale" then storyline.NPC.PlayerFrame:SetPosition(0,0.5,0);storyline.NPC.PlayerFrame:SetModelScale(0.7) -- ok
