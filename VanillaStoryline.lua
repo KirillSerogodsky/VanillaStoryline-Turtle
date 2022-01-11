@@ -99,6 +99,7 @@ function storyline:OnEvent()
 			StorylineOptions.WindowScale = 1
 			StorylineOptions.WindowLevel = 4
 			StorylineOptions.FontSize = 14
+			StorylineOptions.EnableModelManip = 0
 		end
 		-- compability to old version
 		if not StorylineOptions.WindowScale then StorylineOptions.WindowScale = 1 end
@@ -114,6 +115,7 @@ function storyline:OnEvent()
 		storyline.Background:ConfigureFrame() -- configure Background Frame
 		storyline.Player:ConfigureFrame() -- configure player 3d Frame
 		storyline.NPC:ConfigureFrame() -- configure the NPC 3d frame
+		storyline:ConfigureModelRotation() -- configures the default rotation behaviour
 		storyline.Text:ConfigureFrame() -- configure fonts
 		storyline.Gossip:ConfigureFrame() -- configure Gossip Frame
 		storyline.QuestDetail:ConfigureFrame() -- configure Quest Detail Frame
@@ -1817,6 +1819,31 @@ function storyline.OptionsFrame:ConfigureFrame()
 				else self.PFHideButton:SetChecked(0) end
 			end
 			
+			--Model Manipulation Option
+			self.PFHideButton = CreateFrame("CheckButton", nil, self, "UICheckButtonTemplate")
+				self.PFHideButton:SetWidth(24)
+				self.PFHideButton:SetHeight(24)
+				self.PFHideButton:SetPoint("TOPLEFT",650,-75)
+				self.PFHideButton:SetScript("OnClick", function ()
+													 PlaySound("igMainMenuOptionCheckBoxOn")
+													 if StorylineOptions.EnableModelManip == 0 then StorylineOptions.EnableModelManip = 1
+													 else StorylineOptions.EnableModelManip = 0 end
+													 storyline:ConfigureModelRotation()
+													 end)
+
+			self.PFHideFont = self.PFHideButton:CreateFontString(nil, "OVERLAY")
+				self.PFHideFont:SetPoint("LEFT", -210, 0)
+				self.PFHideFont:SetFont("Fonts\\FRIZQT__.TTF", 12)
+				self.PFHideFont:SetWidth(200)
+				self.PFHideFont:SetJustifyH("RIGHT")
+				self.PFHideFont:SetJustifyV("CENTER")
+				self.PFHideFont:SetText("Enable Model Manipulation:")
+				self.PFHideFont:SetTextColor(1,1,1)			
+				
+			if StorylineOptions.EnableModelManip == 1 then self.PFHideButton:SetChecked(1)
+			else self.PFHideButton:SetChecked(0) end
+			
+			
 		-- Frame Level
 		
 		local function configLevelDropdown()
@@ -2388,13 +2415,125 @@ function storyline:UpdateRewardItems()
 	if totalRewards == 0 then storyline.QuestComplete.Mainframe:Hide() end
 end
 
+function storyline:ConfigureModelRotation()
+	if StorylineOptions.EnableModelManip == 1 then storyline:EnableModelManipulation()
+	else storyline:DisableModelManipulation()
+	end
+end
+
+function storyline:DisableModelManipulation()
+	--PlayerFrame
+	storyline.Player.PlayerFrame:EnableMouse(0)
+	storyline.Player.PlayerFrame:EnableMouseWheel(0)
+	
+	storyline.Player.PlayerFrame:SetScript('OnMouseWheel', function(self, spining) end)
+	
+	storyline.Player.PlayerFrame:SetScript('OnMouseUp', function(self) end)
+	
+	storyline.Player.PlayerFrame:SetScript('OnMouseDown', function() end)
+
+	--NPCFrame
+	storyline.NPC.PlayerFrame:EnableMouse(0)
+	storyline.NPC.PlayerFrame:EnableMouseWheel(0)
+	storyline.NPC.PlayerFrame:SetScript('OnMouseWheel', function(self, spining) end)
+	
+	storyline.NPC.PlayerFrame:SetScript('OnMouseUp', function(self) end)
+	
+	storyline.NPC.PlayerFrame:SetScript('OnMouseDown', function() end)
+end
+
+function storyline:EnableModelManipulation()
+	--PlayerFrame
+	storyline.Player.PlayerFrame:EnableMouse(1)
+	storyline.Player.PlayerFrame:EnableMouseWheel(1)
+	storyline.Player.PlayerFrame:SetScript('OnMouseWheel', function(self, spining)
+        local Z, X, Y = storyline.Player.PlayerFrame:GetPosition()
+        Z = (arg1 > 0 and Z + 1 or Z - 1)
+
+		storyline.Player.PlayerFrame:SetPosition(Z, X, Y)
+    end)
+	
+	storyline.Player.PlayerFrame:SetScript('OnMouseUp', function(self)
+        storyline.Player.PlayerFrame:SetScript('OnUpdate', nil)
+    end)
+	
+	storyline.Player.PlayerFrame:SetScript('OnMouseDown', function()
+        local StartX, StartY = GetCursorPosition()
+
+        local EndX, EndY, Z, X, Y
+        if arg1 == 'LeftButton' then
+            storyline.Player.PlayerFrame:SetScript('OnUpdate', function(self)
+                EndX, EndY = GetCursorPosition()
+
+                storyline.Player.PlayerFrame.rotation = (EndX - StartX) / 34 + storyline.Player.PlayerFrame:GetFacing()
+
+                storyline.Player.PlayerFrame:SetFacing(storyline.Player.PlayerFrame.rotation)
+
+                StartX, StartY = GetCursorPosition()
+            end)
+        elseif arg1 == 'RightButton' then
+            storyline.Player.PlayerFrame:SetScript('OnUpdate', function(self)
+                EndX, EndY = GetCursorPosition()
+
+                Z, X, Y = storyline.Player.PlayerFrame:GetPosition(Z, X, Y)
+                X = (EndX - StartX) / 45 + X
+                Y = (EndY - StartY) / 45 + Y
+
+                storyline.Player.PlayerFrame:SetPosition(Z, X, Y)
+                StartX, StartY = GetCursorPosition()
+            end)
+        end
+    end)
+
+	--NPCFrame
+	storyline.NPC.PlayerFrame:EnableMouse(1)
+	storyline.NPC.PlayerFrame:EnableMouseWheel(1)
+	storyline.NPC.PlayerFrame:SetScript('OnMouseWheel', function(self, spining)
+        local Z, X, Y = storyline.NPC.PlayerFrame:GetPosition()
+        Z = (arg1 > 0 and Z + 1 or Z - 1)
+
+		storyline.NPC.PlayerFrame:SetPosition(Z, X, Y)
+    end)
+	
+	storyline.NPC.PlayerFrame:SetScript('OnMouseUp', function(self)
+        storyline.NPC.PlayerFrame:SetScript('OnUpdate', nil)
+    end)
+	
+	storyline.NPC.PlayerFrame:SetScript('OnMouseDown', function()
+        local StartX, StartY = GetCursorPosition()
+
+        local EndX, EndY, Z, X, Y
+        if arg1 == 'LeftButton' then
+            storyline.NPC.PlayerFrame:SetScript('OnUpdate', function(self)
+                EndX, EndY = GetCursorPosition()
+
+                storyline.NPC.PlayerFrame.rotation = (EndX - StartX) / 34 + storyline.NPC.PlayerFrame:GetFacing()
+
+                storyline.NPC.PlayerFrame:SetFacing(storyline.NPC.PlayerFrame.rotation)
+
+                StartX, StartY = GetCursorPosition()
+            end)
+        elseif arg1 == 'RightButton' then
+            storyline.NPC.PlayerFrame:SetScript('OnUpdate', function(self)
+                EndX, EndY = GetCursorPosition()
+
+                Z, X, Y = storyline.NPC.PlayerFrame:GetPosition(Z, X, Y)
+                X = (EndX - StartX) / 45 + X
+                Y = (EndY - StartY) / 45 + Y
+
+                storyline.NPC.PlayerFrame:SetPosition(Z, X, Y)
+                StartX, StartY = GetCursorPosition()
+            end)
+        end
+    end)
+end
+
 -- Update 3D Models
 function storyline:UpdateModels()
 	
 	if UnitExists("npc") then storyline.NPC.PlayerFrame:SetUnit("npc")
 	else storyline.NPC.PlayerFrame:SetModel("Interface\\Buttons\\talktomequestionmark.mdx") end
-	
-	
+		
 	-- set players scale
 	storyline.Player.PlayerFrame:SetUnit("player")
 	storyline.Player.PlayerFrame:SetModelScale(1)
@@ -2473,8 +2612,9 @@ function storyline:UpdateModels()
 	elseif model == "Creature\\Kodobeast\\KodoBeastPack" then storyline.NPC.PlayerFrame:SetPosition(0,0.2,2.6);storyline.NPC.PlayerFrame:SetModelScale(0.4) -- ok with scalebug
 	elseif model == "Creature\\DragonSpawn\\DragonSpawn" then storyline.NPC.PlayerFrame:SetPosition(0,2,1);storyline.NPC.PlayerFrame:SetModelScale(0.9-(StorylineOptions.WindowScale-1)) -- ok with scalebug
 	end
-	
+
 end
+
 
 function storyline:ResetModels()
 	-- Reset parameter
