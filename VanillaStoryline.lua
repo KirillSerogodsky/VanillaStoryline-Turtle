@@ -523,7 +523,7 @@ function storyline.Background:ConfigureFrame()
 		self.OptionsButton:SetHighlightTexture("Interface\\Buttons\\UI-PlusButton-Hilight")
 		self.OptionsButton:SetScript("OnClick",function() PlaySound("igMainMenuOptionCheckBoxOn")
 																						if storyline.OptionsFrame:IsVisible() then  storyline.OptionsFrame:Hide()
-																						else  storyline.OptionsFrame:Show() end
+																						else  storyline.UpdateOptions();storyline.OptionsFrame:Show() end
 																					end)
 
 end
@@ -1646,16 +1646,37 @@ end
 
 function storyline.OptionsFrame:ConfigureFrame()
 	local backdrop = {bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background", edgeFile="Interface\\DialogFrame\\UI-DialogBox-Border", tile=true,tileSize = 16, edgeSize = 16, insets = { left = 3, right = 3, top = 3, bottom = 3 }}
-   self:SetBackdrop(backdrop)
-   self:SetBackdropColor(1,1,1,1)
+    self:SetBackdrop(backdrop)
+    self:SetBackdropColor(1,1,1,1)
 	 self:SetWidth(680)
  	 self:SetHeight(150)
 	 self:SetPoint("BOTTOM",0,-(self:GetHeight()))
 
-		-- testspeed
+	--Instant Quest Text Option (users blizzard interface option variable)
+	self.InstantTextButton = CreateFrame("CheckButton", nil, self, "UICheckButtonTemplate")
+				self.InstantTextButton:SetWidth(24)
+				self.InstantTextButton:SetHeight(24)
+				self.InstantTextButton:SetPoint("TOPLEFT", 125, -5)
+				self.InstantTextButton:SetScript("OnClick", function ()
+													 PlaySound("igMainMenuOptionCheckBoxOn")
+													 if QUEST_FADING_DISABLE == "1" then  QUEST_FADING_DISABLE = "0"
+													 else QUEST_FADING_DISABLE = "1";
+													 PlaySound("igQuestCancel"); end
+													 storyline.UpdateOptions()
+													 end)
+
+			self.InstantTextFont = self.InstantTextButton:CreateFontString(nil, "OVERLAY")
+				self.InstantTextFont:SetPoint("TOPLEFT", -115, -3)
+				self.InstantTextFont:SetFont("Fonts\\FRIZQT__.TTF", 12)
+				self.InstantTextFont:SetWidth(200)
+				self.InstantTextFont:SetJustifyH("LEFT")
+				self.InstantTextFont:SetText("Instant Quest Text:")
+				self.InstantTextFont:SetTextColor(1,1,1)
+			
+		-- textspeed
 		 self.SpeedSlider = CreateFrame("Slider","StorylineSpeedSlider",self,"OptionsSliderTemplate")
-		 self.SpeedSlider:SetPoint("TOPLEFT", 10, -40)
-     self.SpeedSlider:SetWidth(132)
+		 self.SpeedSlider:SetPoint("TOPLEFT", 10, -50)
+		 self.SpeedSlider:SetWidth(132)
 		 self.SpeedSlider:SetHeight(17)
 		 self.SpeedSlider:SetOrientation("HORIZONTAL")
 		 self.SpeedSlider:SetThumbTexture("Interface\\Buttons\\UI-SliderBar-Button-Horizontal")
@@ -1716,9 +1737,9 @@ function storyline.OptionsFrame:ConfigureFrame()
 		 
 		 -- StorylineOptions.FontSize
 		 
-		  self.FontSizeSlider = CreateFrame("Slider","StorylineFontSizeSlider",self,"OptionsSliderTemplate")
+		 self.FontSizeSlider = CreateFrame("Slider","StorylineFontSizeSlider",self,"OptionsSliderTemplate")
 		 self.FontSizeSlider:SetPoint("TOPLEFT", 10, -110)
-     self.FontSizeSlider:SetWidth(132)
+		 self.FontSizeSlider:SetWidth(132)
 		 self.FontSizeSlider:SetHeight(17)
 		 self.FontSizeSlider:SetOrientation("HORIZONTAL")
 		 self.FontSizeSlider:SetThumbTexture("Interface\\Buttons\\UI-SliderBar-Button-Horizontal")
@@ -1960,6 +1981,12 @@ function storyline.OptionsFrame:ConfigureFrame()
 
 		 -- hide
 		 self:Hide()
+end
+
+function storyline.UpdateOptions()
+	if QUEST_FADING_DISABLE == "0" then storyline.OptionsFrame.InstantTextButton:SetChecked(0); storyline.OptionsFrame.SpeedSlider:Show(); storyline.OptionsFrame.SpeedFont:Show()
+	else storyline.OptionsFrame.InstantTextButton:SetChecked(1); storyline.OptionsFrame.SpeedSlider:Hide(); storyline.OptionsFrame.SpeedFont:Hide() end
+
 end
 
 function storyline.Player:ConfigureFrame()
