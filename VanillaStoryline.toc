@@ -1,8 +1,8 @@
 ## Interface: 11200
-## Title: VanillaStoryline
-## Author: |cffABD473Renew @ nostalrius.org
-## Version: 1.0.2
-## Notes: VanillaStoryline - updated by tubtubs
+## Title: VanillaStoryline |ccf3CE13FV2
+## Author: |cffABD473Renew @ nostalrius.org - updated by |ccf3CE13Ftubtubs @ TurtleWoW
+## Version: 2.0
+## Notes: VanillaStoryline 
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: StorylineOptions

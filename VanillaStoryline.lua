@@ -30,7 +30,7 @@ storyline.Options.GradientLength = 30
 storyline.Options.Offset = 0 -- text offset for max. scroll frame
 storyline.Options.Delay = 0.03 -- 30 fps update
 storyline.Options.FrameStrata = {[1]="BACKGROUND",[2]="LOW",[3]="MEDIUM",[4]="HIGH",[5]="DIALOG",[6]="FULLSCREEN",[7]="FULLSCREEN_DIALOG",[8]="TOOLTIP"}
-storyline.Options.Version = "1.0.2" -- version
+storyline.Options.Version = "2.0.0" -- version
 
 -- onupdate text
 storyline.Variables.fadingProgress = 0
@@ -602,7 +602,7 @@ function storyline.Gossip:ConfigureFrame()
 					self.Frame.Scrollframe.Content.Block[i].Font:SetPoint("LEFT", 20, 0)
 					self.Frame.Scrollframe.Content.Block[i].Font:SetFont("Fonts\\FRIZQT__.TTF", 12)
 					self.Frame.Scrollframe.Content.Block[i].Font:SetWidth(255)
-					self.Frame.Scrollframe.Content.Block[i].Font:SetHeight(16)
+					--self.Frame.Scrollframe.Content.Block[i].Font:SetHeight(16)
 					self.Frame.Scrollframe.Content.Block[i].Font:SetJustifyH("LEFT")
 					self.Frame.Scrollframe.Content.Block[i].Font:SetJustifyV("CENTER")
 					self.Frame.Scrollframe.Content.Block[i].Font:SetText("TEST")
@@ -738,17 +738,48 @@ function storyline:updateGossip()
 		end
 	end
 
+       --resize all gossip items to match the height of text
+       for i=1,counter do
+               storyline.Gossip.Frame.Scrollframe.Content.Block[i].Button:SetHeight(storyline.Gossip.Frame.Scrollframe.Content.Block[i].Font:GetHeight())
+               storyline.Gossip.Frame.Scrollframe.Content.Block[i]:SetHeight(storyline.Gossip.Frame.Scrollframe.Content.Block[i].Font:GetHeight()+2)
+       end
+
+       --dynamically re-position all dialog options after the first
+       for i=2,counter do
+               storyline.Gossip.Frame.Scrollframe.Content.Block[i]:SetPoint("BOTTOMLEFT",
+                               storyline.Gossip.Frame.Scrollframe.Content.Block[i-1].Button,
+                               0,
+                               -9-(storyline.Gossip.Frame.Scrollframe.Content.Block[i].Font:GetHeight()))
+       end
+
+       local height = 0
+       for i=1, counter do
+               height = height + storyline.Gossip.Frame.Scrollframe.Content.Block[i]:GetHeight() + 5
+       end
+
+       local r_height = 0
+       for i=1, counter do
+               r_height = r_height + storyline.Gossip.Frame.Scrollframe.Content.Block[i]:GetHeight()
+       end
+
+
 	-- set height of Scrollframe
-	if counter < 3 and counter ~= 0 then counter = 2 end -- heightfix
+	--if counter < 3 and counter ~= 0 then counter = 2 end -- heightfix, redundant with dynamic resizing
+	
+	-- everything seems to be ok if calculated height values are used instead of counters, including dynamics.
+	-- Not tested for tall values over 9 quantity. IS there any example of this?
 	if counter == 0 then storyline.Gossip.Frame:Hide()
 	elseif counter < 9 then
 		storyline.Gossip.Frame.Slider:SetMinMaxValues(0, 0)
 		storyline.Gossip.Frame.Scrollframe.Content:SetHeight(200)
-		storyline.Gossip.Frame:SetHeight((counter*18) + 25)
+		--storyline.Gossip.Frame:SetHeight((counter*18) + 25)
+        storyline.Gossip.Frame:SetHeight(height + 25)
 		storyline.Gossip.Frame.Slider:Hide()
 	else
-		storyline.Gossip.Frame.Slider:SetMinMaxValues(0, (counter*5)-16)
-		storyline.Gossip.Frame.Scrollframe.Content:SetHeight(counter*5)
+		--storyline.Gossip.Frame.Slider:SetMinMaxValues(0, (counter*5)-16)
+		--storyline.Gossip.Frame.Scrollframe.Content:SetHeight(counter*5)
+        storyline.Gossip.Frame.Slider:SetMinMaxValues(0, (r_height /3))
+        --storyline.Gossip.Frame.Scrollframe.Content:SetHeight(height)
 		storyline.Gossip.Frame:SetHeight(200)
 		storyline.Gossip.Frame.Slider:Show()
 	end
