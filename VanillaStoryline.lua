@@ -105,6 +105,8 @@ function storyline:OnEvent()
 		if not StorylineOptions.WindowScale then StorylineOptions.WindowScale = 1 end
 		if not StorylineOptions.WindowLevel then StorylineOptions.WindowLevel = 4 end
 		if not StorylineOptions.FontSize then StorylineOptions.FontSize = 14 end
+		if not StorylineOptions.EnableModelManip then StorylineOptions.EnableModelManip = 0 end
+
 		
 		storyline.Options.TextSpeed = StorylineOptions.TextSpeed
 		storyline.Options.WindowScale = StorylineOptions.WindowScale
