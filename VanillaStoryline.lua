@@ -100,12 +100,14 @@ function storyline:OnEvent()
 			StorylineOptions.WindowLevel = 4
 			StorylineOptions.FontSize = 14
 			StorylineOptions.EnableModelManip = 0
+			StorylineOptions.InstantRewards = 0
 		end
 		-- compability to old version
 		if not StorylineOptions.WindowScale then StorylineOptions.WindowScale = 1 end
 		if not StorylineOptions.WindowLevel then StorylineOptions.WindowLevel = 4 end
 		if not StorylineOptions.FontSize then StorylineOptions.FontSize = 14 end
 		if not StorylineOptions.EnableModelManip then StorylineOptions.EnableModelManip = 0 end
+		if not StorylineOptions.InstantRewards then StorylineOptions.InstantRewards = 0 end
 
 		
 		storyline.Options.TextSpeed = StorylineOptions.TextSpeed
@@ -801,7 +803,7 @@ function storyline.QuestDetail:ConfigureFrame()
 		self.GetQuest.Accept:SetBackdropColor(1,1,1,1)
 		self.GetQuest.Accept:SetWidth(40)
 		self.GetQuest.Accept:SetHeight(40)
-		self.GetQuest.Accept:SetPoint("LEFT",20,0)
+		self.GetQuest.Accept:SetPoint("LEFT",20,20)
 
 	self.GetQuest.Accept.Button = CreateFrame("Button",nil,self.GetQuest.Accept)
 	self.GetQuest.Accept.Button:SetWidth(40)
@@ -822,7 +824,7 @@ function storyline.QuestDetail:ConfigureFrame()
 		self.GetQuest.Decline:SetBackdropColor(1,1,1,1)
 		self.GetQuest.Decline:SetWidth(40)
 		self.GetQuest.Decline:SetHeight(40)
-		self.GetQuest.Decline:SetPoint("RIGHT",-20,0)
+		self.GetQuest.Decline:SetPoint("RIGHT",-20,20)
 
 	self.GetQuest.Decline.Button = CreateFrame("Button",nil,self.GetQuest.Decline)
 	self.GetQuest.Decline.Button:SetWidth(40)
@@ -843,7 +845,7 @@ function storyline.QuestDetail:ConfigureFrame()
 		self.GetQuest.CenterItem:SetBackdropColor(1,1,1,1)
 		self.GetQuest.CenterItem:SetWidth(40)
 		self.GetQuest.CenterItem:SetHeight(40)
-		self.GetQuest.CenterItem:SetPoint("CENTER",0,0)
+		self.GetQuest.CenterItem:SetPoint("CENTER",0,20)
 
 	self.GetQuest.CenterRing = CreateFrame("Frame",nil,self.GetQuest)
 	local backdrop = {bgFile = "Interface\\AddOns\\VanillaStoryline\\Assets\\Images\\PandarenTrainingLarge_Circular_Frame"}
@@ -851,12 +853,12 @@ function storyline.QuestDetail:ConfigureFrame()
 		self.GetQuest.CenterRing:SetBackdropColor(1,1,1,1)
 		self.GetQuest.CenterRing:SetWidth(100)
 		self.GetQuest.CenterRing:SetHeight(100)
-		self.GetQuest.CenterRing:SetPoint("CENTER",0,0)
+		self.GetQuest.CenterRing:SetPoint("CENTER",0,20)
 
 	self.GetQuest.CenterFlash = CreateFrame("Frame",nil,self.GetQuest)
 		self.GetQuest.CenterFlash:SetWidth(100)
 		self.GetQuest.CenterFlash:SetHeight(100)
-		self.GetQuest.CenterFlash:SetPoint("CENTER",0,0)
+		self.GetQuest.CenterFlash:SetPoint("CENTER",0,20)
 	local Flash = self.GetQuest.CenterFlash:CreateTexture()
 		Flash:SetAllPoints()
 		Flash:SetTexture("Interface\\AddOns\\VanillaStoryline\\Assets\\Images\\PandarenTrainingLarge_Circular_Flash")
@@ -1844,12 +1846,45 @@ function storyline.OptionsFrame:ConfigureFrame()
 			if storyline.Options.HideBlizzardFrames == 1 then self.HideButton:SetChecked(1)
 			else self.HideButton:SetChecked(0) end
 			
+			
+			-- instant quest rewards
+			self.InstantRewardsButton = CreateFrame("CheckButton", nil, self, "UICheckButtonTemplate")
+				self.InstantRewardsButton:SetWidth(24)
+				self.InstantRewardsButton:SetHeight(24)
+				self.InstantRewardsButton:SetPoint("TOPLEFT",650,-50)
+				self.InstantRewardsButton:SetScript("OnClick", function ()
+													 PlaySound("igMainMenuOptionCheckBoxOn")
+													 if StorylineOptions.InstantRewards == 0 then StorylineOptions.InstantRewards = 1
+ 													 else StorylineOptions.InstantRewards = 0; PlaySound("igQuestCancel"); end
+													 end)
+
+													 
+
+			self.InstantRewardsFont = self.InstantRewardsButton:CreateFontString(nil, "OVERLAY")
+				self.InstantRewardsFont:SetPoint("LEFT", -210, 0)
+				self.InstantRewardsFont:SetFont("Fonts\\FRIZQT__.TTF", 12)
+				self.InstantRewardsFont:SetWidth(200)
+				self.InstantRewardsFont:SetJustifyH("RIGHT")
+				self.InstantRewardsFont:SetJustifyV("CENTER")
+				self.InstantRewardsFont:SetText("Instant Quest Rewards:")
+				self.InstantRewardsFont:SetTextColor(1,1,1)
+				self.InstantRewardsButton:SetScript("OnEnter",function()
+													GameTooltip:SetOwner(self.InstantRewardsFont, "ANCHOR_TOPRIGHT",20,-80);
+													GameTooltip:SetText("When enabled, displays quest rewards before clicking continue", 1, 1, 1, 1, 1);
+													GameTooltip:Show()
+													end)
+				self.InstantRewardsButton:SetScript("OnLeave",function() GameTooltip:Hide() end)
+
+			
+			if StorylineOptions.InstantRewards == 1 then self.InstantRewardsButton:SetChecked(1)
+			else self.InstantRewardsButton:SetChecked(0) end
+			
 			--pfUI gossip/quest skin disable. Option hidden if pfUI is not installed
 			if pfUI and pfUI.uf then 	
 				self.PFHideButton = CreateFrame("CheckButton", nil, self, "UICheckButtonTemplate")
 					self.PFHideButton:SetWidth(24)
 					self.PFHideButton:SetHeight(24)
-					self.PFHideButton:SetPoint("TOPLEFT",650,-50)
+					self.PFHideButton:SetPoint("TOPLEFT",650,-100)
 					self.PFHideButton:SetScript("OnClick", function ()
 														 PlaySound("igMainMenuOptionCheckBoxOn")
 														 if pfUI_config["disabled"]["skin_Gossip and Quest"] == "0" then pfUI_config["disabled"]["skin_Gossip and Quest"] = "1"
@@ -1874,29 +1909,29 @@ function storyline.OptionsFrame:ConfigureFrame()
 			end
 			
 			--Model Manipulation Option
-			self.PFHideButton = CreateFrame("CheckButton", nil, self, "UICheckButtonTemplate")
-				self.PFHideButton:SetWidth(24)
-				self.PFHideButton:SetHeight(24)
-				self.PFHideButton:SetPoint("TOPLEFT",650,-75)
-				self.PFHideButton:SetScript("OnClick", function ()
+			self.ModelManipButton = CreateFrame("CheckButton", nil, self, "UICheckButtonTemplate")
+				self.ModelManipButton:SetWidth(24)
+				self.ModelManipButton:SetHeight(24)
+				self.ModelManipButton:SetPoint("TOPLEFT",650,-75)
+				self.ModelManipButton:SetScript("OnClick", function ()
 													 PlaySound("igMainMenuOptionCheckBoxOn")
 													 if StorylineOptions.EnableModelManip == 0 then StorylineOptions.EnableModelManip = 1
 													 else StorylineOptions.EnableModelManip = 0 end
 													 storyline:ConfigureModelRotation()
 													 end)
 
-			self.PFHideFont = self.PFHideButton:CreateFontString(nil, "OVERLAY")
-				self.PFHideFont:SetPoint("LEFT", -210, 0)
-				self.PFHideFont:SetFont("Fonts\\FRIZQT__.TTF", 12)
-				self.PFHideFont:SetWidth(200)
-				self.PFHideFont:SetJustifyH("RIGHT")
-				self.PFHideFont:SetJustifyV("CENTER")
-				self.PFHideFont:SetText("Enable Model Manipulation:")
-				self.PFHideFont:SetTextColor(1,1,1)			
+			self.ModelManipFont = self.ModelManipButton:CreateFontString(nil, "OVERLAY")
+				self.ModelManipFont:SetPoint("LEFT", -210, 0)
+				self.ModelManipFont:SetFont("Fonts\\FRIZQT__.TTF", 12)
+				self.ModelManipFont:SetWidth(200)
+				self.ModelManipFont:SetJustifyH("RIGHT")
+				self.ModelManipFont:SetJustifyV("CENTER")
+				self.ModelManipFont:SetText("Enable Model Manipulation:")
+				self.ModelManipFont:SetTextColor(1,1,1)			
 				
-			if StorylineOptions.EnableModelManip == 1 then self.PFHideButton:SetChecked(1)
-			else self.PFHideButton:SetChecked(0) end
-			
+			if StorylineOptions.EnableModelManip == 1 then self.ModelManipButton:SetChecked(1)
+			else self.ModelManipButton:SetChecked(0) end
+
 			
 		-- Frame Level
 		
@@ -2125,8 +2160,23 @@ end
 function storyline:AcceptQuest()
 	-- hide and show
 	storyline:HideAll()
-  UIFrameFadeIn(storyline.QuestDetail.GetQuest,0.5)
-	storyline.Background.layer4.Banner:Show()
+		--Display Rewards early if Instant Rewards is enabled
+	UIFrameFadeIn(storyline.QuestDetail.GetQuest,0.5)
+		if (StorylineOptions.InstantRewards == 1) then
+		storyline.QuestComplete.Mainframe.CenterFlash:Hide()
+		storyline.QuestComplete.Mainframe.CenterRing:Hide()
+		storyline.QuestComplete.Mainframe.CenterItem.Frame:Hide()
+		storyline.QuestComplete.Mainframe.CenterItem:Hide()
+
+		storyline.Background.layer4.Banner:Show()
+		storyline:UpdateRewardItems()
+		for i=1,6 do 
+			storyline.QuestComplete.Mainframe.Reward.Block[i]:SetBackdropColor(0.8,0.8,0.8,0)
+			storyline.QuestComplete.Mainframe.Reward.Block[i].Item.Button:SetScript("OnClick",function() end)
+		end
+		UIFrameFadeIn(storyline.QuestComplete.Mainframe,0.5)
+	end
+	--Show quest rewards while accepting quests
 
 	-- open clicking
 	storyline.Background.layer5.Questtext.Fade.Button:SetScript("OnEnter",function()
@@ -2162,6 +2212,23 @@ function storyline:AcceptQuest()
 end
 
 function storyline:AcceptQuestOnClick()
+
+	--Display Rewards late if Instant Rewards is disabled.	
+	if (StorylineOptions.InstantRewards == 0) then
+		storyline.QuestComplete.Mainframe.CenterFlash:Hide()
+		storyline.QuestComplete.Mainframe.CenterRing:Hide()
+		storyline.QuestComplete.Mainframe.CenterItem.Frame:Hide()
+		storyline.QuestComplete.Mainframe.CenterItem:Hide()
+
+		storyline.Background.layer4.Banner:Show()
+		storyline:UpdateRewardItems()
+		for i=1,6 do 
+			storyline.QuestComplete.Mainframe.Reward.Block[i]:SetBackdropColor(0.8,0.8,0.8,0)
+			storyline.QuestComplete.Mainframe.Reward.Block[i].Item.Button:SetScript("OnClick",function() end)
+		end
+		UIFrameFadeIn(storyline.QuestComplete.Mainframe,0.5)
+	end
+
 	-- close clicking
 	storyline.Background.layer5.Questtext:SetBackdropBorderColor(1,1,1,1)
 	storyline.Background.layer5.Questtext.Fade.Button:SetScript("OnEnter",function()
@@ -2180,7 +2247,6 @@ function storyline:ProgressQuest()
 	storyline:HideAll()
 	UIFrameFadeIn(storyline.QuestProgress.Mainframe,0.5)
 	storyline.Background.layer4.Banner:Show()
-
 	-- point to Quest
 	storyline:GetObjectiveText()
 	storyline:UpdateReqItems()
@@ -2263,11 +2329,19 @@ end
 function storyline:CompleteQuest()
 	-- hide and show
 	storyline:HideAll()
-	UIFrameFadeIn(storyline.QuestComplete.Mainframe,0.5)
-	storyline.Background.layer4.Banner:Show()
+	--Show the decorations for completing the quest
+	storyline.QuestComplete.Mainframe.CenterFlash:Show()
+	storyline.QuestComplete.Mainframe.CenterRing:Show()
+	storyline.QuestComplete.Mainframe.CenterItem.Frame:Show()
+	storyline.QuestComplete.Mainframe.CenterItem:Show()
+	--Update cached rewards, and un-click all of them (visually)
 	storyline:UpdateRewardItems()
 	for i=1,6 do storyline.QuestComplete.Mainframe.Reward.Block[i]:SetBackdropColor(0.8,0.8,0.8,0) end
+	UIFrameFadeIn(storyline.QuestComplete.Mainframe,0.5)
+	
+	storyline.Background.layer4.Banner:Show()
 
+	
 	-- close clicking
 	storyline.Background.layer5.Questtext.Fade.Button:SetScript("OnEnter",function()
 													storyline.Background.layer5.Questtext:SetBackdropBorderColor(0,1,0,1)
@@ -2289,7 +2363,6 @@ function storyline:CompleteQuest()
 
 	storyline.Text.Banner:SetText(QuestTitel)
 	storyline:ShowNPCText(RewardText)
-
 
 	-- show
 	storyline.Background:Show()
@@ -2626,10 +2699,11 @@ function storyline:UpdateModels()
 
 	-- Model scale Fixes for uncommon creatures
 	local model = storyline.NPC.PlayerFrame:GetModel()
-	
+	-- Creature\GnomeSpidertank\GnomeBot.mdx
 	-- individual model position fix
 	if model == "Interface\\Buttons\\talktomequestionmark" then storyline.NPC.PlayerFrame:SetPosition(0,0.9,0);storyline.NPC.PlayerFrame:SetModelScale(2) -- ok with scalebug
-			-- Onu from Darkshore used to test
+	elseif model == "Creature\\GnomeSpidertank\\GnomeBot" then storyline.NPC.PlayerFrame:SetPosition(-4,-5.4,0);storyline.NPC.PlayerFrame:SetModelScale(0.6) -- ok with scalebug		
+		-- Onu from Darkshore used to test
 	elseif model == "Creature\\AncientOfLore\\AncientofLore" then storyline.NPC.PlayerFrame:SetPosition(0,2.0,3.9);storyline.NPC.PlayerFrame:SetModelScale(0.35) -- ok with scalebug
 		--Screecher spirits
 	elseif model == "Creature\\WindSerpent\\WindSerpent" then storyline.NPC.PlayerFrame:SetPosition(0,0.5,1.0) 
