@@ -764,7 +764,6 @@ function storyline:updateGossip()
                r_height = r_height + storyline.Gossip.Frame.Scrollframe.Content.Block[i]:GetHeight()
        end
 
-
 	-- set height of Scrollframe
 	--if counter < 3 and counter ~= 0 then counter = 2 end -- heightfix, redundant with dynamic resizing
 	
@@ -780,7 +779,7 @@ function storyline:updateGossip()
 	else
 		--storyline.Gossip.Frame.Slider:SetMinMaxValues(0, (counter*5)-16)
 		--storyline.Gossip.Frame.Scrollframe.Content:SetHeight(counter*5)
-        storyline.Gossip.Frame.Slider:SetMinMaxValues(0, (r_height /3))
+        storyline.Gossip.Frame.Slider:SetMinMaxValues(0, (r_height /2))
         --storyline.Gossip.Frame.Scrollframe.Content:SetHeight(height)
 		storyline.Gossip.Frame:SetHeight(200)
 		storyline.Gossip.Frame.Slider:Show()
