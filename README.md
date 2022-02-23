@@ -5,9 +5,9 @@ An enhanced version of the original vanilla wow gossip/quest dialog replacer.
 1. Click the Code button to the upper right hand corner and select download or click [here](https://github.com/tubtubs/VanillaStoryline/archive/refs/heads/master.zip).
 2. Unzip the download into your Interface/Addons folder in your WoW directory. Eg: *C:\Games\Turtle WoW\Interface\Addons*
 3. Rename the folder from *VanillaStoryline-master* to *VanillaStoryline*
-4. Restart WoW and enable the addon and you should be good to go.
+4. Restart WoW and enable the addon from the character selection screen. Ensure your addon memory cap is set to 0 (no limit) as well.
 
--If there are any further issues with installation, ensure that *VanillaStoryline.toc* is in the root folder. There should be no subdirectories. Eg: *C:\Games\Turtle WoW\Interface\Addons\VanillaStoryline\VanillaStoryline.lua*
+-If there are any further issues with installation, ensure that *VanillaStoryline.toc* is in the root folder. There should be no subdirectories. Eg: *C:\Games\Turtle WoW\Interface\Addons\VanillaStoryline\VanillaStoryline.toc*
 
 # Improvements:
 - Disabled click through to avoid issues with spamming interact through the window
