@@ -7,7 +7,7 @@ An enhanced version of the original vanilla wow gossip/quest dialog replacer.
 3. Rename the folder from *VanillaStoryline-master* to *VanillaStoryline*
 4. Restart WoW and enable the addon and you should be good to go.
 
--If there are any further issues with installation, ensure that *VanillaStoryline.toc* is in the root folder. There should be no subdirectories. Eg: *C:\Games\Turtle WoW\Interface\Addons\VanillaStoryline\VanillaStoryline.lua *
+-If there are any further issues with installation, ensure that *VanillaStoryline.toc* is in the root folder. There should be no subdirectories. Eg: *C:\Games\Turtle WoW\Interface\Addons\VanillaStoryline\VanillaStoryline.lua*
 
 # Improvements:
 - Disabled click through to avoid issues with spamming interact through the window
