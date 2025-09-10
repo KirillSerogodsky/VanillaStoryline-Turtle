@@ -90,6 +90,10 @@ function storyline:OnEvent()
 		storyline.Background:Hide()
 		storyline:ResetModels()
 	elseif event == "GOSSIP_SHOW" then
+		if GetGossipText() == "TRANSMOG_TRIGGER" then
+			return
+		end
+
 		storyline:ResetModels()
 		storyline:UpdateZone()
 		storyline.Variables.GreetingsFlag = 0
