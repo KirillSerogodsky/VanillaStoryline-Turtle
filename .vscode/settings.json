@@ -1,0 +1,23 @@
+{
+    "Lua.runtime.version": "Lua 5.1",
+    "Lua.type.inferParamType": true,
+    "Lua.diagnostics.globals": [
+        "arg",
+        "arg1",
+        "arg2",
+        "arg3",
+        "arg4",
+        "arg5",
+        "arg6",
+        "arg7",
+        "arg8",
+        "arg9",
+        "event",
+    ],
+    "Lua.workspace.library": [
+        "_Vanilla-WoW-Lua-Definitions"
+    ],
+    "Lua.diagnostics.disable": [
+        "deprecated"
+    ]
+}
